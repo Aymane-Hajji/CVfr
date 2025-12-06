@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV - Aymane Aboukhaira</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Vue.js 3 -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .bg-sidebar {
+            background-color: #1e40af; /* Darker, more professional blue */
+            color: white;
+        }
+        .bg-sidebar .text-slate-800, .bg-sidebar .text-slate-900 {
+            color: white !important;
+        }
+        .bg-sidebar .text-slate-700 {
+            color: #dbeafe !important; /* Light blue for text */
+        }
+        .bg-sidebar .border-blue-200 {
+            border-color: #3b82f6 !important;
+        }
+        .bg-sidebar .section-icon {
+            color: #93c5fd !important;
+        }
+        .text-accent {
+            color: #1e40af; /* Darker blue for headers */
+        }
+        .section-icon {
+            color: #2563eb;
+        }
+        /* Custom print styles to ensure background colors show up */
+        @media print {
+            body {
+                background-color: white;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .no-print {
+                display: none;
+            }
+            .page-break {
+                page-break-inside: avoid;
+            }
+            .bg-sidebar {
+                background-color: #1e40af !important;
+                color: white !important;
+            }
+            .bg-white {
+                background-color: white !important;
+            }
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <div id="app" class="min-h-screen flex justify-center items-start py-8 px-4 sm:px-0">
+        
+        <!-- Main Container (A4 aspect ratio approx) -->
+        <div class="w-full max-w-[1000px] bg-white shadow-2xl overflow-hidden rounded-sm flex flex-col relative">
+            
+            <!-- Download Button (Floating) -->
+            <button @click="printCV" class="no-print fixed bottom-8 right-8 bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 transition-all z-50 flex items-center gap-2">
+                <i class="fas fa-print"></i>
+                <span class="hidden sm:inline">Imprimer / PDF</span>
+            </button>
+
+            <!-- Header Section -->
+            <header class="p-8 border-b border-gray-100 flex flex-col-reverse md:flex-row justify-between items-center gap-6">
+                <div class="flex-1 w-full">
+                    <!-- Blue accent bar on name -->
+                    <div class="border-l-4 border-blue-600 pl-4">
+                        <h1 class="text-4xl md:text-5xl font-bold uppercase tracking-wide text-slate-900">{{ header.name }}</h1>
+                        <h2 class="text-xl md:text-2xl text-blue-700 mt-2 font-semibold">{{ header.title }}</h2>
+                    </div>
+                    
+                    <div class="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-700">
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-map-marker-alt text-blue-600"></i>
+                            <span>{{ header.location }}</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-envelope text-blue-600"></i>
+                            <a :href="'mailto:' + header.email" class="hover:text-blue-800 transition-colors">{{ header.email }}</a>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-phone text-blue-600"></i>
+                            <a :href="'tel:' + header.phone.replace(/\s/g, '')" class="hover:text-blue-800 transition-colors">{{ header.phone }}</a>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fab fa-linkedin text-blue-600"></i>
+                            <a :href="'https://' + header.linkedin" target="_blank" class="hover:text-blue-800 transition-colors">{{ header.linkedin }}</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Profile Image -->
+                <div class="w-40 h-40 md:w-48 md:h-48 flex-shrink-0 relative">
+                    <div class="absolute inset-0 bg-blue-600 rounded-lg rotate-3 opacity-20 transform z-0"></div>
+                    <img :src="header.photoUrl" 
+                         alt="Photo de profil" 
+                         class="w-full h-full object-cover rounded-lg shadow-xl border-4 border-white relative z-10">
+                </div>
+            </header>
+
+            <!-- Main Content Grid -->
+            <div class="flex flex-col md:flex-row h-full flex-1">
+                
+                <!-- Left Sidebar (Dark Blue Background) -->
+                <div class="w-full md:w-1/3 bg-sidebar p-6 md:p-8 space-y-8">
+                    
+                    <!-- Skills Section -->
+                    <section>
+                        <h3 class="flex items-center gap-2 text-xl font-bold border-b pb-2 mb-5 uppercase tracking-wider">
+                            <i class="fas fa-cogs section-icon"></i>
+                            Compétences
+                        </h3>
+                        <div class="space-y-5 text-sm">
+                            <div v-for="(skillGroup, index) in skills" :key="index">
+                                <h4 class="font-bold mb-2 text-blue-200 uppercase text-xs">{{ skillGroup.category }}</h4>
+                                <ul class="list-disc list-outside ml-4 space-y-1">
+                                    <li v-for="item in skillGroup.items" :key="item" class="leading-relaxed">{{ item }}</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Languages Section -->
+                    <section>
+                        <h3 class="flex items-center gap-2 text-xl font-bold border-b pb-2 mb-5 uppercase tracking-wider">
+                            <i class="fas fa-comments section-icon"></i>
+                            Langues
+                        </h3>
+                        <ul class="space-y-3 text-sm">
+                            <li v-for="(lang, index) in languages" :key="index" class="flex flex-col">
+                                <span class="font-bold">{{ lang.name }}</span>
+                                <span class="text-blue-200 text-xs uppercase">{{ lang.level }}</span>
+                            </li>
+                        </ul>
+                    </section>
+                    
+                    <!-- Decorative Graphic Element (Bottom Left) -->
+                    <div class="mt-auto hidden md:block opacity-10 self-end">
+                         <svg width="150" height="150" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="#ffffff" d="M44.7,-76.4C58.9,-69.2,71.8,-59.1,81.6,-46.6C91.4,-34.1,98.1,-19.2,95.8,-4.9C93.5,9.3,82.1,22.9,71.3,34.6C60.5,46.3,50.2,56.1,38.6,63.4C27,70.7,14.1,75.5,0.7,74.3C-12.7,73.1,-26.6,65.9,-39.3,58.3C-52,50.7,-63.5,42.7,-71.7,32.2C-79.9,21.7,-84.8,8.7,-83.4,-3.8C-82,-16.3,-74.3,-28.3,-64.7,-38.3C-55.1,-48.3,-43.6,-56.3,-31.6,-64.8C-19.6,-73.3,-7.1,-82.3,4.2,-89.6L15.5,-96.9" transform="translate(100 100)" />
+                        </svg>
+                    </div>
+
+                </div>
+
+                <!-- Right Content (White Background) -->
+                <div class="w-full md:w-2/3 bg-white p-6 md:p-8 space-y-8">
+                    
+                    <!-- Profile Section -->
+                    <section>
+                        <h3 class="flex items-center gap-2 text-xl font-bold text-accent border-b-2 border-gray-100 pb-2 mb-4 uppercase tracking-wider">
+                            <i class="fas fa-user section-icon"></i>
+                            Profil Professionnel
+                        </h3>
+                        <p class="text-sm text-slate-600 leading-relaxed text-justify">
+                            {{ profile }}
+                        </p>
+                    </section>
+
+                    <!-- Experience -->
+                    <section>
+                        <h3 class="flex items-center gap-2 text-xl font-bold text-accent border-b-2 border-gray-100 pb-2 mb-6 uppercase tracking-wider">
+                            <i class="fas fa-briefcase section-icon"></i>
+                            Expérience Professionnelle
+                        </h3>
+                        <div v-for="(job, index) in experience" :key="index" class="mb-8 page-break last:mb-0 relative pl-6 border-l-2 border-blue-100">
+                            <div class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-blue-500 border-2 border-white"></div>
+                            <h4 class="font-bold text-slate-900 text-lg">{{ job.role }}</h4>
+                            <div class="flex flex-col sm:flex-row justify-between text-sm text-blue-600 mb-3 font-semibold">
+                                <span>{{ job.company }} | {{ job.location }}</span>
+                                <span class="italic">{{ job.period }}</span>
+                            </div>
+                            <ul class="list-disc list-outside ml-4 text-sm text-slate-600 space-y-2">
+                                <li v-for="(task, i) in job.tasks" :key="i" class="leading-relaxed">{{ task }}</li>
+                            </ul>
+                        </div>
+                    </section>
+
+                    <!-- Academic Projects -->
+                    <section>
+                        <h3 class="flex items-center gap-2 text-xl font-bold text-accent border-b-2 border-gray-100 pb-2 mb-6 uppercase tracking-wider">
+                            <i class="fas fa-folder-open section-icon"></i>
+                            Projets Académiques Clés
+                        </h3>
+                        <div v-for="(project, index) in projects" :key="index" class="mb-6 page-break last:mb-0 relative pl-6 border-l-2 border-blue-100">
+                            <div class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-blue-500 border-2 border-white"></div>
+                            <div class="flex justify-between items-baseline flex-wrap mb-2">
+                                <h4 class="font-bold text-slate-900 text-lg">{{ project.title }}</h4>
+                                <span class="text-xs font-semibold text-blue-700 bg-blue-50 px-2 py-1 rounded">{{ project.period }}</span>
+                            </div>
+                            <p class="text-sm text-slate-700 mb-2 italic">{{ project.context }}</p>
+                            <ul class="list-disc list-outside ml-4 mt-2 text-sm text-slate-600 space-y-2">
+                                <li v-for="(detail, i) in project.details" :key="i" class="leading-relaxed">{{ detail }}</li>
+                            </ul>
+                        </div>
+                    </section>
+
+                    <!-- Education -->
+                    <section>
+                        <h3 class="flex items-center gap-2 text-xl font-bold text-accent border-b-2 border-gray-100 pb-2 mb-6 uppercase tracking-wider">
+                            <i class="fas fa-graduation-cap section-icon"></i>
+                            Formation
+                        </h3>
+                        <div v-for="(edu, index) in education" :key="index" class="mb-6 relative pl-6 border-l-2 border-blue-100">
+                            <div class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-blue-500 border-2 border-white"></div>
+                            <h4 class="font-bold text-slate-900 text-base md:text-lg">{{ edu.degree }}</h4>
+                            <div class="text-sm text-blue-600 font-semibold mt-1">
+                                <span>{{ edu.school }}</span>
+                            </div>
+                             <span class="text-sm text-slate-500 italic">{{ edu.period }}</span>
+                        </div>
+                    </section>
+
+                    <!-- Certifications -->
+                    <section>
+                        <h3 class="flex items-center gap-2 text-xl font-bold text-accent border-b-2 border-gray-100 pb-2 mb-4 uppercase tracking-wider">
+                            <i class="fas fa-certificate section-icon"></i>
+                            Certifications & Formations
+                        </h3>
+                        <ul class="space-y-3 text-sm text-slate-700">
+                            <li v-for="(cert, index) in certifications" :key="index" class="flex items-start gap-3 bg-blue-50 p-3 rounded-lg">
+                                <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                                <div class="flex flex-col">
+                                    <span class="font-semibold">{{ cert.name }}</span>
+                                    <span class="text-slate-500 text-xs">{{ cert.issuer }} | {{ cert.status }}</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </section>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const { createApp } = Vue;
+
+        createApp({
+            data() {
+                return {
+                    header: {
+                        name: "Aymane Aboukhaira",
+                        title: "Technicien IT / Administrateur Réseaux & Systèmes",
+                        location: "Tanger, Maroc",
+                        email: "aymanaboukhira55@gmail.com",
+                        phone: "+212 7 72 27 60 15",
+                        linkedin: "linkedin.com/in/aboukhaira/",
+                        photoUrl: "1761336746977.jpeg" 
+                    },
+                    profile: "Technicien spécialisé en Réseaux & Systèmes (DTS en cours), passionné et rigoureux, avec une solide maîtrise de l'administration système (Windows/Linux), du support technique et de la gestion d'infrastructure réseau. Fort d'une expérience probante en gestion d'équipe et en environnements exigeants, je suis reconnu pour mon autonomie, ma capacité de diagnostic rapide et mon sens du service. Je cherche à mettre mes compétences techniques et mon dynamisme au service d'une entreprise innovante.",
+                    skills: [
+                        {
+                            category: "Administration Système",
+                            items: [
+                                "Windows Server 2019/2022 (AD DS, DNS, DHCP, GPO)",
+                                "Windows 10/11 (Déploiement, Support N1/N2)",
+                                "Linux (Debian/Red Hat) : Administration CLI, scripts Shell"
+                            ]
+                        },
+                        {
+                            category: "Réseaux & Sécurité",
+                            items: [
+                                "Architecture LAN/WLAN, Modèle OSI/TCP/IP",
+                                "Cisco IOS (Switching/Routing : VLAN, STP, OSPF)",
+                                "Sécurité : Pare-feu, VPN, ACLs, Sauvegardes"
+                            ]
+                        },
+                        {
+                            category: "Outils & Virtualisation",
+                            items: [
+                                "Microsoft 365 (Administration Teams, Exchange Online)",
+                                "Virtualisation : VMware Workstation, Hyper-V, Proxmox, ESXI",
+                                "Ticketing (ex: GLPI, Jira), Monitoring"
+                            ]
+                        },
+                        {
+                            category: "Support & Maintenance",
+                            items: [
+                                "Diagnostic pannes Hardware/Software",
+                                "Gestion de parc informatique",
+                                "Assistance utilisateurs à distance/sur site"
+                            ]
+                        }
+                    ],
+                    languages: [
+                        { name: "Français", level: "Intermédiaire Technique (B2)" },
+                        { name: "Anglais", level: "Intermédiaire Technique (B2)" },
+                        { name: "Arabe", level: "Langue Maternelle" }
+                    ],
+                    projects: [
+                        {
+                            title: "Conception & Déploiement d'une Infrastructure Réseau d'Entreprise",
+                            period: "2024 - Présent",
+                            details: [
+                                "Architecture et configuration d'un réseau multi-sites sécurisé sous Cisco Packet Tracer (VLANs, routage inter-VLAN, OSPF, NAT, ACLs).",
+                                "Installation et promotion d'un contrôleur de domaine Windows Server 2022 : gestion centralisée des utilisateurs, groupes et stratégies de sécurité (GPO).",
+                                "Mise en place de services réseaux essentiels : Serveurs DNS, DHCP et fichiers avec gestion des quotas et permissions NTFS.",
+                                "Rédaction d'une documentation technique complète : schémas d'architecture, plan d'adressage IP et procédures d'exploitation."
+                            ]
+                        }
+                    ],
+                    experience: [
+                        {
+                            role: "Chargé de Dépôt / Responsable de Zone",
+                            company: "McDonald's",
+                            location: "Tanger",
+                            period: "Juin 2024 - Juin 2025",
+                            tasks: [
+                                "Supervision opérationnelle d'une équipe de 10+ personnes, assurant le respect des standards de qualité et de sécurité sous forte pression.",
+                                "Gestion rigoureuse des flux financiers (caisses, dépôts) avec un taux d'erreur de 0%, et reporting journalier à la direction.",
+                                "Optimisation des processus de travail pour améliorer la rapidité de service et la satisfaction client.",
+                                "Formation et intégration des nouveaux collaborateurs aux procédures internes."
+                            ]
+                        },
+                        {
+                            role: "Équipier Polyvalent",
+                            company: "Pizza Hut",
+                            location: "Tanger",
+                            period: "Juin 2023 - Mai 2024",
+                            tasks: [
+                                "Collaboration efficace au sein d'une équipe dynamique pour atteindre les objectifs de production et de vente.",
+                                "Adaptation rapide aux différents postes et procédures, démontrant polyvalence et fiabilité.",
+                                "Maintien d'un environnement de travail propre et conforme aux normes d'hygiène."
+                            ]
+                        }
+                    ],
+                    education: [
+                        {
+                            degree: "Diplôme de Technicien Spécialisé (DTS) en Réseaux & Systèmes Informatiques",
+                            school: "ISMONTIC ",
+                            period: "Sept. 2024 - Juil. 2026 (En cours)"
+                        }
+                    ],
+                    certifications: [
+                        {
+                            name: "CCNA (Cisco Certified Network Associate)",
+                            issuer: "Cisco",
+                            status: "En préparation (Modules 1 & 2 validés)"
+                        },
+                        {
+                            name: "IT Essentials: PC Hardware and Software",
+                            issuer: "Cisco Networking Academy",
+                            status: "Validé"
+                        }
+                    ]
+                }
+            },
+            methods: {
+                printCV() {
+                    window.print();
+                }
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>
