@@ -135,21 +135,51 @@
                         </p>
                     </section>
 
-                    <!-- Technical Projects (The Core) -->
+                    <!-- Professional Experience (Moved Up & Modified to Full Width) -->
+                    <section class="mb-8">
+                        <h3 class="flex items-center gap-2 text-xl font-bold text-accent border-b-2 border-indigo-100 pb-2 mb-4 uppercase tracking-wider">
+                            <i class="fas fa-briefcase text-indigo-500 text-lg"></i> Expérience Pratique & Pro
+                        </h3>
+                        
+                        <div class="flex flex-col gap-5">
+                            <div v-for="(job, index) in experience" :key="index" class="bg-slate-50 p-4 rounded-lg border border-slate-100 break-inside-avoid">
+                                <div class="flex flex-col sm:flex-row justify-between items-start mb-3 border-b border-slate-200 pb-2">
+                                    <div>
+                                        <h4 class="font-bold text-slate-800 text-base uppercase tracking-tight">{{ job.role }}</h4>
+                                        <span class="text-sm font-semibold text-indigo-600 block mt-0.5">{{ job.company }}</span>
+                                    </div>
+                                    <span class="text-xs font-bold text-slate-500 whitespace-nowrap bg-white px-2 py-1 rounded border border-slate-200 mt-2 sm:mt-0">{{ job.period }}</span>
+                                </div>
+                                
+                                <div class="pl-1">
+                                    <!-- Render list items if details exist -->
+                                    <ul v-if="job.details" class="list-disc list-outside ml-4 text-sm text-slate-600 space-y-1.5 mb-3">
+                                        <li v-for="detail in job.details" :key="detail" v-html="detail"></li>
+                                    </ul>
+                                    
+                                    <!-- Fallback for summary -->
+                                    <p v-if="job.summary" class="text-sm text-slate-500 mb-3">{{ job.summary }}</p>
+                                    
+                                    <!-- Soft Skills Removed -->
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Technical Projects -->
                     <section class="mb-8">
                         <div class="flex justify-between items-center border-b-2 border-indigo-100 pb-2 mb-5">
                             <h3 class="flex items-center gap-2 text-xl font-bold text-accent uppercase tracking-wider">
-                                <i class="fas fa-network-wired text-indigo-500 text-lg"></i> Projets & Labs
+                                <i class="fas fa-network-wired text-indigo-500 text-lg"></i> Projets Académiques
                             </h3>
-                            <span class="text-xs font-semibold bg-indigo-50 text-indigo-700 px-2 py-1 rounded border border-indigo-100">Portfolio Technique</span>
+                            <!-- Portfolio Placeholder Removed -->
                         </div>
                         
                         <div class="space-y-6">
                             <div v-for="(project, index) in projects" :key="index" class="relative pl-0 md:pl-4 transition-all hover:bg-slate-50 rounded-lg p-2 -ml-2">
                                 <div class="flex flex-col sm:flex-row justify-between items-start mb-2">
                                     <h4 class="font-bold text-slate-900 text-lg flex items-center gap-2">
-                                        <i v-if="project.type === 'lab'" class="fas fa-laptop-code text-indigo-400 text-sm"></i>
-                                        <i v-else class="fas fa-project-diagram text-indigo-400 text-sm"></i>
+                                        <i class="fas fa-project-diagram text-indigo-400 text-sm"></i>
                                         {{ project.title }}
                                     </h4>
                                     <span v-if="project.context" class="text-xs text-slate-400 bg-slate-100 px-2 py-0.5 rounded">{{ project.context }}</span>
@@ -168,45 +198,20 @@
                         </div>
                     </section>
 
-                    <!-- Certifications (Moved to Main for visibility) -->
+                    <!-- Certifications -->
                     <section class="mb-8">
                         <h3 class="flex items-center gap-2 text-xl font-bold text-accent border-b-2 border-indigo-100 pb-2 mb-4 uppercase tracking-wider">
                             <i class="fas fa-certificate text-indigo-500 text-lg"></i> Certifications
                         </h3>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div v-for="cert in certifications" :key="cert.name" class="bg-slate-50 p-3 rounded border border-slate-200 flex items-center justify-between">
+                        <div class="grid grid-cols-1 gap-4">
+                            <div v-for="cert in certifications" :key="cert.name" class="bg-slate-50 p-3 rounded border border-slate-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                                 <div>
                                     <div class="font-bold text-slate-800 text-sm">{{ cert.name }}</div>
                                     <div class="text-xs text-slate-500">{{ cert.issuer }}</div>
                                 </div>
-                                <span :class="cert.status.includes('En') ? 'bg-yellow-100 text-yellow-700' : 'bg-green-100 text-green-700'" class="text-xs px-2 py-1 rounded font-medium">
+                                <span class="text-xs px-2 py-1 rounded font-medium bg-yellow-100 text-yellow-700 whitespace-nowrap">
                                     {{ cert.status }}
                                 </span>
-                            </div>
-                        </div>
-                    </section>
-
-                    <!-- Condensed Professional Experience -->
-                    <section>
-                        <h3 class="flex items-center gap-2 text-xl font-bold text-accent border-b-2 border-indigo-100 pb-2 mb-4 uppercase tracking-wider">
-                            <i class="fas fa-briefcase text-indigo-500 text-lg"></i> Autres Expériences
-                        </h3>
-                        
-                        <div class="grid grid-cols-1 gap-4">
-                            <div v-for="(job, index) in experience" :key="index" class="flex flex-col sm:flex-row gap-4 items-start bg-slate-50 p-3 rounded-lg border border-slate-100">
-                                <div class="min-w-[120px]">
-                                    <span class="text-xs font-bold text-slate-500 block uppercase tracking-wide">{{ job.period }}</span>
-                                    <span class="text-xs font-medium text-indigo-600">{{ job.company }}</span>
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-slate-800 text-sm mb-1">{{ job.role }}</h4>
-                                    <p class="text-xs text-slate-500 mb-2">{{ job.summary }}</p>
-                                    <div class="flex flex-wrap gap-1">
-                                        <span v-for="skill in job.softSkills" :key="skill" class="text-[10px] bg-white border border-slate-200 text-slate-500 px-2 py-0.5 rounded-full">
-                                            {{ skill }}
-                                        </span>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </section>
@@ -224,27 +229,30 @@
                 return {
                     header: {
                         name: "Aymane Aboukhaira",
-                        title: "Technicien IT / Admin Système & Réseaux",
-                        location: "Tanger, Maroc",
+                        title: "Administrateur Systèmes & Réseaux (Junior)",
+                        location: "Tanger, Maroc • Mobile sur tout le Maroc",
                         email: "aymanaboukhira55@gmail.com",
                         phone: "+212 7 72 27 60 15",
                         linkedin: "linkedin.com/in/aboukhaira/",
-                        photoUrl: "1761336746977.jpeg" // Using the local file as requested
+                        photoUrl: "1761336746977.jpeg"
                     },
-                    // RECRUITER FIX: Removed fluffy adjectives. Focused on technical intent and the DTS diploma.
-                    profile: "Technicien Spécialisé en Réseaux & Systèmes (en cours d'obtention DTS). Passionné par l'infrastructure IT, je complète ma formation académique par une pratique intensive en Home Lab (Virtualisation, Linux, Windows Server). Je possède une expérience confirmée en gestion d'équipe (McDonald's), démontrant ma capacité à respecter des procédures strictes et à gérer le stress. Je recherche une opportunité pour appliquer mes compétences techniques en administration système et support.",
+                    profile: "Futur Administrateur Système (ISMONTIC 2026) opérationnel sur Windows Server et Cisco. Passionné par l'infrastructure, je dispose d'un Home Lab de production (AD, DNS, Virtualisation) qui me permet d'être immédiatement autonome sur des missions de support N1/N2 et d'administration junior.",
                     skills: [
                         {
-                            category: "Administration Système",
-                            items: ["Windows Server 2019/2022 (AD, DNS, DHCP, GPO)", "Linux (Debian/Ubuntu) : Administration CLI", "Gestion des utilisateurs et droits d'accès"]
+                            category: "Systèmes",
+                            items: ["Windows Server 2019/2022 (AD DS, DNS, DHCP, GPO)", "Linux (Debian/Ubuntu CLI)"]
                         },
                         {
-                            category: "Réseaux & Sécurité",
-                            items: ["Routing & Switching (Cisco IOS)", "VLANs, STP, Inter-VLAN routing", "Firewalling basique & ACLs", "Protocoles : OSPF, TCP/IP, SSH"]
+                            category: "Réseaux",
+                            items: ["Routing & Switching (Cisco IOS)", "VLANs, STP, OSPF", "TCP/IP, ACLs, SSH"]
                         },
                         {
-                            category: "Virtualisation & Outils",
-                            items: ["Hyperviseurs : VMware ESXi, Proxmox", "VirtualBox & VMware Workstation", "Outils de Ticketing (Jira/GLPI)", "Dépannage Hardware/Software"]
+                            category: "Virtualisation & Cloud",
+                            items: ["Proxmox VE", "VMware ESXi", "Docker (Notions)"]
+                        },
+                        {
+                            category: "Outils & Support",
+                            items: ["GLPI (Déploiement & Ticketing)", "Dépannage Hardware/Software"]
                         }
                     ],
                     languages: [
@@ -252,39 +260,23 @@
                         { name: "Anglais", level: "B2 " },
                         { name: "Arabe", level: "Langue maternelle" }
                     ],
-                    // RECRUITER FIX: Split the one project into two specific ones, and added a Home Lab section.
                     projects: [
                         {
                             title: "Infrastructure Windows Server & Sécurité",
                             context: "Projet Académique",
-                            type: "project",
-                            techStack: "Windows Server 2022 • Active Directory • GPO • PowerShell",
+                            techStack: "Windows Server 2022 • Active Directory • GPO",
                             details: [
-                                "Déploiement d'une forêt Active Directory avec redondance (Contrôleurs de domaine principal et secondaire).",
-                                "Sécurisation des postes clients via <strong>GPO</strong> (Restrictions, Mappage lecteurs, Déploiement logiciels).",
-                                "Configuration d'un serveur DHCP avec basculement (Failover) pour haute disponibilité."
+                                "Déploiement d'une forêt Active Directory avec redondance (Failover).",
+                                "Sécurisation des postes clients via GPO et durcissement des accès."
                             ]
                         },
                         {
                             title: "Architecture Réseau Multi-Sites (Cisco)",
                             context: "Simulation Packet Tracer",
-                            type: "project",
-                            techStack: "Cisco IOS • OSPF • VLAN • NAT/PAT",
+                            techStack: "Cisco IOS • OSPF • NAT/PAT",
                             details: [
-                                "Design d'une topologie interconnectant 3 sites distants via routage dynamique <strong>OSPF</strong>.",
-                                "Segmentation du trafic (VLANs Data, Voix, Management) pour optimiser la sécurité.",
-                                "Implémentation d'ACLs pour filtrer le trafic inter-VLAN et sécuriser l'accès SSH."
-                            ]
-                        },
-                        {
-                            title: "Home Lab & Auto-formation",
-                            context: "Projets Personnels",
-                            type: "lab",
-                            techStack: "Proxmox • Linux • Docker",
-                            details: [
-                                "Mise en place d'un environnement de virtualisation (Type 1) pour tester différents OS.",
-                                "Installation et configuration de serveurs Linux (Web, FTP) en ligne de commande.",
-                                "Veille technologique active sur les solutions de conteneurisation."
+                                "Design d'une topologie 3 sites avec routage dynamique OSPF et NAT/PAT.",
+                                "Implémentation d'ACLs pour filtrer le trafic inter-VLAN et sécuriser l'administration SSH."
                             ]
                         }
                     ],
@@ -301,25 +293,38 @@
                         }
                     ],
                     certifications: [
-                        { name: "CCNA 1 & 2 (Réseaux)", issuer: "Cisco NetAcad", status: "Validé" },
-                        { name: "IT Essentials", issuer: "Cisco NetAcad", status: "Validé" }
+                        { 
+                            name: "Préparation Certification Cisco CCNA (200-301) – Modules 1 & 2 Validés", 
+                            issuer: "Cisco NetAcad", 
+                            status: "Obtention prévue : Mai 2026" 
+                        },
+                        { 
+                            name: "Cisco IT Essentials", 
+                            issuer: "Cisco NetAcad", 
+                            status: "Validé" 
+                        }
                     ],
-                    // RECRUITER FIX: Condensed into a smaller section. 
-                    // Emphasized "Soft Skills" rather than "Burger Flipping".
                     experience: [
                         {
-                            role: "Chargé de dépôt",
-                            company: "McDonald's, Tanger",
-                            period: "2024 - 2025",
-                            summary: "Encadrement d'équipe et gestion opérationnelle.",
-                            softSkills: ["Leadership", "Gestion du stress", "Rigueur"]
+                            role: "ADMINISTRATEUR SYSTÈME (HOME LAB)",
+                            company: "Auto-formation & Simulation d’Infrastructure",
+                            period: "2023 – Présent",
+                            details: [
+                                "<strong>Architecture :</strong> Déploiement et maintien d’un domaine Active Directory complet avec gestion des GPO, DNS et DHCP.",
+                                "<strong>Virtualisation :</strong> Gestion d'un cluster Proxmox VE hébergeant des VMs Linux et Windows Server.",
+                                "<strong>Réseau :</strong> Configuration de VLANs et routage inter-VLAN sur équipements Cisco (Topologies Packet Tracer & GNS3).",
+                                "<strong>Monitoring :</strong> Mise en place de dashboards de surveillance pour assurer la disponibilité des services."
+                            ]
                         },
                         {
-                            role: "Équipier Polyvalent",
-                            company: "Pizza Hut, Tanger",
-                            period: "2023 - 2024",
-                            summary: "Service client et respect des procédures.",
-                            softSkills: ["Travail d'équipe", "Ponctualité"]
+                            role: "CHARGÉ DE DÉPÔT / ÉQUIPIER POLYVALENT",
+                            company: "McDonald's & Pizza Hut, Tanger",
+                            period: "2023 - 2025",
+                            details: [
+                                "<strong>Gestion du Stress :</strong> Maintien de la performance opérationnelle et de la précision durant les périodes de rush.",
+                                "<strong>Procédures :</strong> Application rigoureuse des standards d'hygiène et de sécurité (Rigueur procédurale).",
+                                "<strong>Esprit d'équipe :</strong> Collaboration fluide avec une équipe de 10+ personnes pour atteindre les objectifs quotidiens."
+                            ]
                         }
                     ]
                 }
@@ -331,4 +336,3 @@
     </script>
 </body>
 </html>
-
