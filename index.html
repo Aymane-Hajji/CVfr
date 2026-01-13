@@ -11,127 +11,85 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        body { font-family: 'Poppins', sans-serif; background-color: #525252; margin: 0; padding: 0; }
+        body { font-family: 'Poppins', sans-serif; background-color: #e2e8f0; }
         .bg-sidebar { background-color: #0f172a; color: white; }
-        .text-accent { color: #4338ca; } 
+        .text-accent { color: #4338ca; } /* Indigo-700 */
         .border-accent { border-color: #4338ca; }
         
-        /* --- STRICT A4 LAYOUT CSS --- */
-        @page {
-            size: A4 portrait;
-            margin: 0; /* Critical: Browser handles margins, we want 0 from CSS side */
-        }
-
-        /* Force screen visualization to look like a paper sheet */
-        #app {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        /* The Main A4 Container */
-        .a4-page {
-            width: 210mm;
-            height: 297mm;
-            background: white;
-            box-shadow: 0 0 15px rgba(0,0,0,0.2);
-            position: relative;
-            overflow: hidden; /* Clips content if it gets too long, ensuring 1 page */
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Print Settings */
+        /* Print Optimization */
         @media print {
-            body { background: white; }
-            #app { padding: 0; display: block; }
+            body { background-color: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             .no-print { display: none !important; }
-            
-            .a4-page {
-                box-shadow: none;
-                margin: 0;
-                width: 210mm;
-                height: 297mm;
-                page-break-after: avoid;
-                page-break-before: avoid;
-            }
-            
-            /* Ensure background colors print exactly */
-            * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .bg-sidebar { background-color: #0f172a !important; color: white !important; }
+            .page-break { page-break-inside: avoid; }
+            .shadow-2xl { shadow: none !important; box-shadow: none !important; }
+            #app { padding: 0 !important; }
         }
-
-        /* Custom Scrollbar for list items if needed (aesthetic only) */
-        ul { margin-bottom: 0; }
-        p { margin-bottom: 0; }
     </style>
 </head>
 <body class="text-slate-700">
 
-    <div id="app">
+    <div id="app" class="min-h-screen flex justify-center items-start py-8 px-4 sm:px-0">
         
-        <!-- Strict A4 Container -->
-        <div class="a4-page rounded-none">
+        <div class="w-full max-w-[1000px] bg-white shadow-2xl overflow-hidden rounded-sm flex flex-col relative print:w-full print:max-w-none">
             
-            <!-- Save Button (Floating) -->
+            <!-- Save Button -->
             <button @click="printCV" class="no-print fixed bottom-8 right-8 bg-indigo-600 text-white p-4 rounded-full shadow-lg hover:bg-indigo-700 transition-all z-50 flex items-center gap-2">
                 <i class="fas fa-file-pdf"></i>
                 <span class="hidden sm:inline">Sauvegarder en PDF</span>
             </button>
 
-            <!-- Header (Compressed Padding) -->
-            <header class="px-8 py-5 bg-slate-50 border-b border-gray-200 flex flex-row justify-between items-center gap-4 shrink-0">
-                <div class="flex-1 text-left">
-                    <h1 class="text-3xl font-bold uppercase tracking-tight text-slate-900 leading-none">{{ header.name }}</h1>
-                    <h2 class="text-lg text-indigo-600 mt-1 font-bold tracking-wide leading-tight">{{ header.title }}</h2>
+            <!-- Header -->
+            <header class="p-8 bg-slate-50 border-b border-gray-200 flex flex-col-reverse md:flex-row justify-between items-center gap-6">
+                <div class="flex-1 w-full text-center md:text-left">
+                    <h1 class="text-4xl md:text-5xl font-bold uppercase tracking-tight text-slate-900">{{ header.name }}</h1>
+                    <h2 class="text-xl md:text-2xl text-indigo-600 mt-2 font-medium tracking-wide">{{ header.title }}</h2>
                     
-                    <div class="mt-3 flex flex-wrap justify-start gap-x-5 gap-y-1 text-xs text-slate-600 font-medium">
-                        <div class="flex items-center gap-1.5">
+                    <div class="mt-6 flex flex-wrap justify-center md:justify-start gap-x-6 gap-y-2 text-sm text-slate-600 font-medium">
+                        <div class="flex items-center gap-2">
                             <i class="fas fa-map-marker-alt text-indigo-500"></i>
                             <span>{{ header.location }}</span>
                         </div>
-                        <div class="flex items-center gap-1.5">
+                        <div class="flex items-center gap-2">
                             <i class="fas fa-envelope text-indigo-500"></i>
                             <a :href="'mailto:' + header.email" class="hover:text-indigo-700">{{ header.email }}</a>
                         </div>
-                        <div class="flex items-center gap-1.5">
+                        <div class="flex items-center gap-2">
                             <i class="fas fa-phone text-indigo-500"></i>
                             <a :href="'tel:' + header.phone.replace(/\s/g, '')" class="hover:text-indigo-700">{{ header.phone }}</a>
                         </div>
-                        <div class="flex items-center gap-1.5">
+                        <div class="flex items-center gap-2">
                             <i class="fab fa-linkedin text-indigo-500"></i>
                             <a :href="'https://' + header.linkedin" target="_blank" class="hover:text-indigo-700">LinkedIn</a>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Profile Picture (Slightly Smaller) -->
-                <div class="w-28 h-28 flex-shrink-0 relative">
+                <!-- Profile Picture -->
+                <div class="w-36 h-36 md:w-44 md:h-44 flex-shrink-0 relative">
                     <img :src="header.photoUrl" 
                          alt="Profile" 
                          class="w-full h-full object-cover rounded-full shadow-md border-4 border-white bg-slate-200">
                 </div>
             </header>
 
-            <div class="flex flex-row h-full overflow-hidden">
+            <div class="flex flex-col md:flex-row h-full flex-1">
                 
-                <!-- Sidebar (Left) - Compressed Spacing -->
-                <div class="w-[32%] bg-sidebar p-6 space-y-6 print:bg-slate-900 print:text-white h-full">
+                <!-- Sidebar (Left) -->
+                <div class="w-full md:w-1/3 bg-sidebar p-6 md:p-8 space-y-8 print:bg-slate-900 print:text-white">
                     
                     <!-- Skills -->
                     <section>
-                        <h3 class="flex items-center gap-2 text-base font-bold border-b border-slate-600 pb-1 mb-3 uppercase tracking-wider text-white">
+                        <h3 class="flex items-center gap-2 text-lg font-bold border-b border-slate-600 pb-2 mb-4 uppercase tracking-wider text-white">
                             <i class="fas fa-server text-indigo-400"></i> Compétences
                         </h3>
-                        <div class="space-y-4 text-xs">
+                        <div class="space-y-6 text-sm">
                             <div v-for="(group, index) in skills" :key="index">
-                                <h4 class="font-bold mb-1 text-indigo-300 uppercase text-[10px] tracking-wide">{{ group.category }}</h4>
-                                <ul class="space-y-1 text-slate-300">
-                                    <li v-for="item in group.items" :key="item" class="flex items-start gap-2 leading-tight">
-                                        <i class="fas fa-check text-indigo-500 mt-0.5 text-[10px]"></i>
-                                        <span>{{ item }}</span>
+                                <h4 class="font-bold mb-2 text-indigo-300 uppercase text-xs tracking-wide">{{ group.category }}</h4>
+                                <ul class="space-y-2 text-slate-300">
+                                    <li v-for="item in group.items" :key="item" class="flex items-start gap-2">
+                                        <i class="fas fa-check text-indigo-500 mt-1 text-xs"></i>
+                                        <span class="leading-snug">{{ item }}</span>
                                     </li>
                                 </ul>
                             </div>
@@ -140,92 +98,99 @@
 
                     <!-- Education -->
                     <section>
-                        <h3 class="flex items-center gap-2 text-base font-bold border-b border-slate-600 pb-1 mb-3 uppercase tracking-wider text-white">
+                        <h3 class="flex items-center gap-2 text-lg font-bold border-b border-slate-600 pb-2 mb-4 uppercase tracking-wider text-white">
                             <i class="fas fa-graduation-cap text-indigo-400"></i> Formation
                         </h3>
-                        <div v-for="edu in education" :key="edu.degree" class="mb-3 text-xs">
-                            <div class="font-bold text-white text-sm leading-tight">{{ edu.degree }}</div>
-                            <div class="text-indigo-300 mt-0.5">{{ edu.school }}</div>
-                            <div class="text-slate-400 text-[10px] mt-0.5">{{ edu.period }}</div>
+                        <div v-for="edu in education" :key="edu.degree" class="mb-4 text-sm">
+                            <div class="font-bold text-white text-base leading-tight">{{ edu.degree }}</div>
+                            <div class="text-indigo-300 mt-1">{{ edu.school }}</div>
+                            <div class="text-slate-400 text-xs mt-0.5">{{ edu.period }}</div>
                         </div>
                     </section>
 
                     <!-- Languages -->
                     <section>
-                        <h3 class="flex items-center gap-2 text-base font-bold border-b border-slate-600 pb-1 mb-3 uppercase tracking-wider text-white">
+                        <h3 class="flex items-center gap-2 text-lg font-bold border-b border-slate-600 pb-2 mb-4 uppercase tracking-wider text-white">
                             <i class="fas fa-globe text-indigo-400"></i> Langues
                         </h3>
-                        <div class="space-y-2 text-xs text-slate-300">
+                        <div class="space-y-3 text-sm text-slate-300">
                             <div v-for="lang in languages" :key="lang.name" class="flex justify-between items-center border-b border-slate-800 pb-1">
                                 <span class="font-medium text-white">{{ lang.name }}</span>
-                                <span class="text-[10px] text-indigo-200">{{ lang.level }}</span>
+                                <span class="text-xs text-indigo-200">{{ lang.level }}</span>
                             </div>
                         </div>
                     </section>
                 </div>
 
-                <!-- Main Content (Right) - Compressed Margins -->
-                <div class="w-[68%] bg-white p-6 h-full flex flex-col">
+                <!-- Main Content (Right) -->
+                <div class="w-full md:w-2/3 bg-white p-6 md:p-8">
                     
                     <!-- Profile Summary -->
-                    <section class="mb-4">
-                        <h3 class="flex items-center gap-2 text-lg font-bold text-accent border-b-2 border-indigo-100 pb-1 mb-2 uppercase tracking-wider">
-                            <i class="fas fa-user-tie text-indigo-500 text-base"></i> Profil Professionnel
+                    <section class="mb-8">
+                        <h3 class="flex items-center gap-2 text-xl font-bold text-accent border-b-2 border-indigo-100 pb-2 mb-3 uppercase tracking-wider">
+                            <i class="fas fa-user-tie text-indigo-500 text-lg"></i> Profil Professionnel
                         </h3>
-                        <p class="text-[13px] text-slate-600 leading-snug text-justify">
+                        <p class="text-sm text-slate-600 leading-relaxed text-justify">
                             {{ profile }}
                         </p>
                     </section>
 
-                    <!-- Professional Experience -->
-                    <section class="mb-4 flex-1">
-                        <h3 class="flex items-center gap-2 text-lg font-bold text-accent border-b-2 border-indigo-100 pb-1 mb-3 uppercase tracking-wider">
-                            <i class="fas fa-briefcase text-indigo-500 text-base"></i> Expérience Pratique
+                    <!-- Professional Experience (Moved Up & Modified to Full Width) -->
+                    <section class="mb-8">
+                        <h3 class="flex items-center gap-2 text-xl font-bold text-accent border-b-2 border-indigo-100 pb-2 mb-4 uppercase tracking-wider">
+                            <i class="fas fa-briefcase text-indigo-500 text-lg"></i> Expérience Pratique & Pro
                         </h3>
                         
-                        <div class="flex flex-col gap-3">
-                            <div v-for="(job, index) in experience" :key="index" class="bg-slate-50 p-2.5 rounded border border-slate-100 break-inside-avoid">
-                                <div class="flex flex-row justify-between items-start mb-1.5 border-b border-slate-200 pb-1">
+                        <div class="flex flex-col gap-5">
+                            <div v-for="(job, index) in experience" :key="index" class="bg-slate-50 p-4 rounded-lg border border-slate-100 break-inside-avoid">
+                                <div class="flex flex-col sm:flex-row justify-between items-start mb-3 border-b border-slate-200 pb-2">
                                     <div>
-                                        <h4 class="font-bold text-slate-800 text-xs uppercase tracking-tight">{{ job.role }}</h4>
-                                        <span class="text-[11px] font-semibold text-indigo-600 block leading-none mt-0.5">{{ job.company }}</span>
+                                        <h4 class="font-bold text-slate-800 text-base uppercase tracking-tight">{{ job.role }}</h4>
+                                        <span class="text-sm font-semibold text-indigo-600 block mt-0.5">{{ job.company }}</span>
                                     </div>
-                                    <span class="text-[10px] font-bold text-slate-500 whitespace-nowrap bg-white px-1.5 py-0.5 rounded border border-slate-200">{{ job.period }}</span>
+                                    <span class="text-xs font-bold text-slate-500 whitespace-nowrap bg-white px-2 py-1 rounded border border-slate-200 mt-2 sm:mt-0">{{ job.period }}</span>
                                 </div>
                                 
                                 <div class="pl-1">
-                                    <ul v-if="job.details" class="list-disc list-outside ml-3 text-[11px] text-slate-600 space-y-1 mb-0">
-                                        <li v-for="detail in job.details" :key="detail" v-html="detail" class="leading-tight pl-1"></li>
+                                    <!-- Render list items if details exist -->
+                                    <ul v-if="job.details" class="list-disc list-outside ml-4 text-sm text-slate-600 space-y-1.5 mb-3">
+                                        <li v-for="detail in job.details" :key="detail" v-html="detail"></li>
                                     </ul>
+                                    
+                                    <!-- Fallback for summary -->
+                                    <p v-if="job.summary" class="text-sm text-slate-500 mb-3">{{ job.summary }}</p>
+                                    
+                                    <!-- Soft Skills Removed -->
                                 </div>
                             </div>
                         </div>
                     </section>
 
                     <!-- Technical Projects -->
-                    <section class="mb-4">
-                        <div class="flex justify-between items-center border-b-2 border-indigo-100 pb-1 mb-3">
-                            <h3 class="flex items-center gap-2 text-lg font-bold text-accent uppercase tracking-wider">
-                                <i class="fas fa-network-wired text-indigo-500 text-base"></i> Projets
+                    <section class="mb-8">
+                        <div class="flex justify-between items-center border-b-2 border-indigo-100 pb-2 mb-5">
+                            <h3 class="flex items-center gap-2 text-xl font-bold text-accent uppercase tracking-wider">
+                                <i class="fas fa-network-wired text-indigo-500 text-lg"></i> Projets Académiques
                             </h3>
+                            <!-- Portfolio Placeholder Removed -->
                         </div>
                         
-                        <div class="space-y-3">
-                            <div v-for="(project, index) in projects" :key="index" class="relative pl-0 md:pl-2 transition-all hover:bg-slate-50 rounded p-1 -ml-1">
-                                <div class="flex flex-row justify-between items-center mb-1">
-                                    <h4 class="font-bold text-slate-900 text-xs flex items-center gap-1.5">
-                                        <i class="fas fa-project-diagram text-indigo-400 text-[10px]"></i>
+                        <div class="space-y-6">
+                            <div v-for="(project, index) in projects" :key="index" class="relative pl-0 md:pl-4 transition-all hover:bg-slate-50 rounded-lg p-2 -ml-2">
+                                <div class="flex flex-col sm:flex-row justify-between items-start mb-2">
+                                    <h4 class="font-bold text-slate-900 text-lg flex items-center gap-2">
+                                        <i class="fas fa-project-diagram text-indigo-400 text-sm"></i>
                                         {{ project.title }}
                                     </h4>
-                                    <!-- Only show context if space allows, usually small -->
+                                    <span v-if="project.context" class="text-xs text-slate-400 bg-slate-100 px-2 py-0.5 rounded">{{ project.context }}</span>
                                 </div>
                                 
-                                <div class="text-[10px] font-semibold text-indigo-600 mb-1 leading-none">
-                                    {{ project.techStack }}
+                                <div class="text-xs font-semibold text-indigo-600 mb-2 flex flex-wrap gap-2">
+                                    <span class="bg-indigo-50 px-2 py-1 rounded border border-indigo-100">{{ project.techStack }}</span>
                                 </div>
                                 
-                                <ul class="list-disc list-inside text-[11px] text-slate-600 space-y-0.5">
-                                    <li v-for="(detail, i) in project.details" :key="i" class="leading-tight pl-1 truncate">
+                                <ul class="list-disc list-inside text-sm text-slate-600 space-y-1">
+                                    <li v-for="(detail, i) in project.details" :key="i" class="leading-relaxed pl-1">
                                         <span class="text-slate-700" v-html="detail"></span>
                                     </li>
                                 </ul>
@@ -234,17 +199,17 @@
                     </section>
 
                     <!-- Certifications -->
-                    <section class="mt-auto">
-                        <h3 class="flex items-center gap-2 text-lg font-bold text-accent border-b-2 border-indigo-100 pb-1 mb-2 uppercase tracking-wider">
-                            <i class="fas fa-certificate text-indigo-500 text-base"></i> Certifications
+                    <section class="mb-8">
+                        <h3 class="flex items-center gap-2 text-xl font-bold text-accent border-b-2 border-indigo-100 pb-2 mb-4 uppercase tracking-wider">
+                            <i class="fas fa-certificate text-indigo-500 text-lg"></i> Certifications
                         </h3>
-                        <div class="flex flex-col gap-2">
-                            <div v-for="cert in certifications" :key="cert.name" class="bg-slate-50 px-2 py-1.5 rounded border border-slate-200 flex flex-row items-center justify-between gap-2">
+                        <div class="grid grid-cols-1 gap-4">
+                            <div v-for="cert in certifications" :key="cert.name" class="bg-slate-50 p-3 rounded border border-slate-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                                 <div>
-                                    <div class="font-bold text-slate-800 text-[11px] leading-tight">{{ cert.name }}</div>
-                                    <div class="text-[10px] text-slate-500 leading-none mt-0.5">{{ cert.issuer }}</div>
+                                    <div class="font-bold text-slate-800 text-sm">{{ cert.name }}</div>
+                                    <div class="text-xs text-slate-500">{{ cert.issuer }}</div>
                                 </div>
-                                <span class="text-[10px] px-1.5 py-0.5 rounded font-medium bg-yellow-100 text-yellow-700 whitespace-nowrap">
+                                <span class="text-xs px-2 py-1 rounded font-medium bg-yellow-100 text-yellow-700 whitespace-nowrap">
                                     {{ cert.status }}
                                 </span>
                             </div>
@@ -329,7 +294,7 @@
                     ],
                     certifications: [
                         { 
-                            name: "Préparation Certification Cisco CCNA (200-301) – Modules 1 & 2 Validés", 
+                            name: "CCNA (200-301) – Modules 1 & 2 Validés", 
                             issuer: "Cisco NetAcad", 
                             status: "Obtention prévue : Mai 2026" 
                         },
@@ -371,3 +336,5 @@
     </script>
 </body>
 </html>
+
+
